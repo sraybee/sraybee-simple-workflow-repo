@@ -1,6 +1,6 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
-name: Subhradeep Workflow 1
+name: Subhradeep Workflow 2
 on:
   push:
     branches:
@@ -9,8 +9,8 @@ on:
 jobs:
   subhradeep-job-1:
     steps:
-      - name: Subhradeep Step 1
+      - name: Subhradeep Step 2
         uses: docker://golang:1.20.3-alpine3.17
         shell: sh
         run: |
-          echo "Subhradeep Message 1"
+          echo "Subhradeep Message 2"
