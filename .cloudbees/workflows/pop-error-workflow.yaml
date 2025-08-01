@@ -1,0 +1,37 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: pop-error-test-workflow
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test-pop-expression-error:
+    runs-on: cloudbees-runner
+    steps:
+      - name: Setup test data
+        uses: cloudbees-io/configure-oidc-tokens@v1
+        with:
+          audience: test-audience
+          
+      - name: Action with outputs
+        id: action-with-outputs
+        uses: docker://alpine:latest
+        with:
+          run: |
+            echo "Setting up some test data"
+            echo "valid_output=test-value" >> $CLOUDBEES_OUTPUTS/outputs
+            
+      - name: Try to access undefined variable in outputs
+        id: pop-error-step
+        uses: docker://alpine:latest
+        with:
+          run: |
+            echo "This step will fail during pop due to invalid output expression"
+        outputs:
+          # This will cause pop.go to fail when evaluating this expression
+          # because 'nonexistent' is undefined in the scope
+          bad_output: ${{ nonexistent.variable }}
+          # This should work fine
+          good_output: ${{ steps.action-with-outputs.outputs.valid_output }}

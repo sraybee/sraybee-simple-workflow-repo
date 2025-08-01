@@ -1,0 +1,30 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: push-input-error-test-workflow
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test-push-input-expression-error:
+    runs-on: cloudbees-runner
+    steps:
+      - name: Setup context
+        uses: cloudbees-io/configure-oidc-tokens@v1
+        with:
+          audience: test-audience
+          
+      - name: Action with invalid input expression
+        id: push-input-error-step
+        uses: docker://alpine:latest
+        with:
+          # This will cause push.go to fail during evaluateActionInputScope
+          # because 'undefined' is not available in the scope
+          invalid_input: ${{ undefined.variable }}
+          # This should work fine
+          valid_input: "test-value"
+          run: |
+            echo "This action should not execute due to input evaluation error"
+            echo "invalid_input: ${{ invalid_input }}"
+            echo "valid_input: ${{ valid_input }}"
