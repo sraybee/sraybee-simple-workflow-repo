@@ -1,12 +1,12 @@
-apiVersion: automation.cloudbees.io/v1alpha1
-kind: action
 name: test-action
+description: Test action for workflow automation
 inputs:
   input1:
     description: input 1
 
 outputs:
   output1:
+    description: output 1
     value: ${{ startsWith(fromJSON(steps.genjson.outputs.json)['key'], 'prefix') }}
 
 runs:
