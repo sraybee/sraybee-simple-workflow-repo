@@ -1,0 +1,36 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: Test automation
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  test-action-input-mapping-error-handling:
+    steps:
+      - id: genjson
+        name: Generate fake input data
+        uses: docker://alpine:3.22
+        run: |
+          echo '{"key": 3}' > $CLOUDBEES_OUTPUTS/json
+      - name: Run action
+        uses: ./.cloudbees/actions/test
+        with:
+          input1: ${{ startsWith(fromJSON(steps.genjson.outputs.json)['key'], 'prefix') }}
+
+  test-action-output-mapping-error-handling:
+    steps:
+      - id: run
+        name: Run action
+        uses: ./.cloudbees/actions/test
+        with:
+          input1: 'false'
+      - name: Verify action output
+        uses: docker://alpine:3.22
+        run: |
+          set -x
+          [ "$ACTIONOUT" = true ]
+        env:
+          ACTIONOUT: ${{ steps.run.outputs.output1 }}

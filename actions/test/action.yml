@@ -1,0 +1,23 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: action
+name: test-action
+inputs:
+  input1:
+    description: input 1
+
+outputs:
+  output1:
+    value: ${{ startsWith(fromJSON(steps.genjson.outputs.json)['key'], 'prefix') }}
+
+runs:
+  using: composite
+  steps:
+    - id: genjson
+      name: Run action-internal step generating JSON
+      uses: docker://alpine:3.22
+      run: |
+        if [ "${{ inputs.input1 }}" = true ]; then
+          echo '{"key": "prefix suffix"}' > $CLOUDBEES_OUTPUTS/json
+        else
+          echo '{"key": 3}' > $CLOUDBEES_OUTPUTS/json
+        fi
