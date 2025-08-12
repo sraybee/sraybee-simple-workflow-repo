@@ -34,3 +34,15 @@ jobs:
           [ "$ACTIONOUT" = true ]
         env:
           ACTIONOUT: ${{ steps.run.outputs.output1 }}
+
+  test-action-nested-error-handling:
+    steps:
+      - id: genjson
+        name: Generate fake input data
+        uses: docker://alpine:3.22
+        run: |
+          echo '{"key": 3}' > $CLOUDBEES_OUTPUTS/json
+      - name: Run wrapper action (nested)
+        uses: ./.cloudbees/actions/wrapper
+        with:
+          input1: ${{ startsWith(fromJSON(steps.genjson.outputs.json)['key'], 'prefix') }}
