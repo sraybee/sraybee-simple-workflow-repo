@@ -1,3 +1,5 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: action
 name: wrapper-action
 description: Wrapper action that calls test-action
 inputs:
