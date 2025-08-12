@@ -35,7 +35,7 @@ jobs:
         env:
           ACTIONOUT: ${{ steps.run.outputs.output1 }}
 
-  test-action-nested-error-handling:
+  test-action-nested-error-handling-no-id:
     steps:
       - id: genjson
         name: Generate fake input data
@@ -43,6 +43,19 @@ jobs:
         run: |
           echo '{"key": 3}' > $CLOUDBEES_OUTPUTS/json
       - name: Run wrapper action (nested)
+        uses: ./.cloudbees/actions/wrapper
+        with:
+          input1: ${{ startsWith(fromJSON(steps.genjson.outputs.json)['key'], 'prefix') }}
+
+  test-action-nested-error-handling-with-id:
+    steps:
+      - id: genjson
+        name: Generate fake input data
+        uses: docker://alpine:3.22
+        run: |
+          echo '{"key": 3}' > $CLOUDBEES_OUTPUTS/json
+      - id: nested-run-wrapper
+        name: Run wrapper action (nested)
         uses: ./.cloudbees/actions/wrapper
         with:
           input1: ${{ startsWith(fromJSON(steps.genjson.outputs.json)['key'], 'prefix') }}
