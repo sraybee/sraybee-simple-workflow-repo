@@ -12,8 +12,8 @@ outputs:
 runs:
   using: composite
   steps:
-    - id: nested step subhradeep
+    - id: nested
       name: Call nested test-action
-  uses: ./.cloudbees/actions/test
+      uses: ./.cloudbees/actions/test
       with:
         input1: ${{ inputs.input1 }}
