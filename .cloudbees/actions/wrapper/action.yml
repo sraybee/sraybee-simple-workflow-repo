@@ -17,3 +17,8 @@ runs:
       uses: ./.cloudbees/actions/test
       with:
         input1: ${{ inputs.input1 }}
+    - id: print-nested-output
+      name: Print nested output
+      uses: docker://alpine:3.22
+      run: |
+        echo "NESTED OUTPUT: ${{ steps.nested.outputs.output1 }}"

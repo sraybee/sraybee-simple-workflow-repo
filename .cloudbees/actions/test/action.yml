@@ -21,3 +21,8 @@ runs:
         else
           echo '{"key": 3}' > $CLOUDBEES_OUTPUTS/json
         fi
+    - id: print-genjson-output
+      name: Print genjson output
+      uses: docker://alpine:3.22
+      run: |
+        echo "GENJSON OUTPUT: $(cat $CLOUDBEES_OUTPUTS/json)"
