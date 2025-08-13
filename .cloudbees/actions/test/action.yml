@@ -7,7 +7,7 @@ inputs:
 
 outputs:
   output1:
-    value: ${{ startsWith(fromJSON(steps.genjson.outputs.json)['key'], 'prefix') }}
+    value: ${{ startsWith(fromJSON(steps.genjson2.outputs.json)['key'], 'prefix') }}
 
 runs:
   using: composite
